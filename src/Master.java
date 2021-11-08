@@ -40,10 +40,18 @@ public class Master {
 				t.start();
 			}
 			
+			try{
+				for(Thread t: threads) {
+					t.join();
+				}
+			}
+			catch(Exception e) {};
+			
 		
 		}catch(IOException e) {
 			System.out.println("Exception caught when trying to listen on port");
 			System.out.println(e.getMessage());
 		}
+		
 }
 }	
