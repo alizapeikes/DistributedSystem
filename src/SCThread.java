@@ -42,13 +42,6 @@ public class SCThread extends Thread{
 			}
 		}
 		else {
-			System.out.println("Hi from else in CC Thread");
-			
-			int infinite = 0;
-			while(infinite == 0) {
-				responseWriter.println("hello");
-				break;
-			}
 			
 		}
 		

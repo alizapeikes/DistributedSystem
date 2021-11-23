@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.*;
 
-public class MCThread extends Thread {
+public class ClientThread extends Thread {
 
 	private PrintWriter responseWriter = null;
 	private BufferedReader requestReader = null;
 	private int clientID;
 	
-	public MCThread(PrintWriter responseWriter, int id) {
+	public ClientThread(PrintWriter responseWriter, int id) {
 		this.responseWriter = responseWriter;
 		this.clientID = id;	
 	}
 	
-	public MCThread(BufferedReader requestReader, int id) {
+	public ClientThread(BufferedReader requestReader, int id) {
 		this.requestReader = requestReader;
 		this.clientID = id;
 	}

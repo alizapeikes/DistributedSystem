@@ -23,8 +23,8 @@ public class Client1 {
 	        PrintWriter responeWriter = // stream to write text requests to server
 	            new PrintWriter(clientSocket.getOutputStream(), true);
 	   ){
-		  MCThread reader = new MCThread (requestReader, clientID);
-		  MCThread writer = new MCThread (responeWriter, clientID);
+		  ClientThread reader = new ClientThread (requestReader, clientID);
+		  ClientThread writer = new ClientThread (responeWriter, clientID);
 		  
 		  reader.start();
 		  writer.start();
