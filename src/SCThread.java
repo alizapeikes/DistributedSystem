@@ -35,7 +35,12 @@ public class SCThread extends Thread{
 	public void run() {
 		if(requestReader != null) {
 			try {
-				System.out.println("hi");
+				while(!jobs4Slave1.isEmpty()) {
+					synchronized(jobs4Slave1_Lock) {
+						responseWriter.print(jobs4Slave1.get(0));
+						jobs4Slave1.remove(0);
+					}
+				}
 			}
 			catch(IOException e) {
 				System.out.println("Exception caught when trying to listen on port in thread");

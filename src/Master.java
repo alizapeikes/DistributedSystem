@@ -2,7 +2,7 @@
  * just did slave class
  * Trying to figure out how the master will send the jobs to the slaves
  * The slaves are having a separate arraylist to keep track of their jobs
- * master has to send the jobname to slaves
+ * master has to send the jobName to slaves
  */
 import java.net.*;
 import java.io.*;
