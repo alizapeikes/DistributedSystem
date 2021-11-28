@@ -39,7 +39,7 @@ public class CCThread implements Runnable {
 				while((requestString = requestReader.readLine()) !=null) {
 					char jobType = requestString.charAt(0);
 					String jobName = requestString;
-					if(jobType == 'a') {
+					if(jobType == 'a' || ) {
 						synchronized(jobs4Slave1_Lock) {
 							jobs4Slave1.add(jobName);
 						}

@@ -44,9 +44,8 @@ public class SCThread extends Thread{
 		else {
 			
 		}
-		
 			
-		}
+	}
 	
 }
 
