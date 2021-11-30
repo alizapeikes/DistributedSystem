@@ -1,8 +1,15 @@
 /*
+<<<<<<< HEAD
  	Array list of jobs to send and remove them in sc thread when they are actually sent. we are going to use a while
  	loop to control this. Then when the slave finishes a job the master adds it to a different arraylist, and the scthread
  	reads from this arraylist and sends the jobs back to the client.
  	find out about synchronized block regarding adding info to an arrayList.
+=======
+ * just did slave class
+ * Trying to figure out how the master will send the jobs to the slaves
+ * The slaves are having a separate arraylist to keep track of their jobs
+ * master has to send the jobName to slaves
+>>>>>>> c710f3f6678c5cefab386181c5a9e79c3f8cb490
  */
 import java.net.*;
 import java.io.*;
