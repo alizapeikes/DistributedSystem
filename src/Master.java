@@ -1,8 +1,8 @@
 /*
- * just did slave class
- * Trying to figure out how the master will send the jobs to the slaves
- * The slaves are having a separate arraylist to keep track of their jobs
- * master has to send the jobname to slaves
+ 	Array list of jobs to send and remove them in sc thread when they are actually sent. we are going to use a while
+ 	loop to control this. Then when the slave finishes a job the master adds it to a different arraylist, and the scthread
+ 	reads from this arraylist and sends the jobs back to the client.
+ 	find out about synchronized block regarding adding info to an arrayList.
  */
 import java.net.*;
 import java.io.*;
@@ -45,14 +45,17 @@ public class Master {
 			ArrayList<String> jobs4Slave2 = new ArrayList<>();
 			Object jobs4Slave1_lock = new Object();
 			Object jobs4Slave2_lock = new Object();
+			LoadTracker tracker = new LoadTracker();
+			Object tracker1_lock = new Object();
+			Object tracker2_lock = new Object();
 			
 			
 			ArrayList<Thread> threads = new ArrayList<>();
 			//Client threads
-			threads.add(new Thread(new CCThread(cResponseWriter1, 1, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock)));
-			threads.add(new Thread(new CCThread(cRequestReader1, 1, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock)));
-			threads.add(new Thread(new CCThread(cResponseWriter2, 2, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock)));
-			threads.add(new Thread(new CCThread(cRequestReader2, 2, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock)));
+			threads.add(new Thread(new CCThread(cResponseWriter1, 1, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock, tracker, tracker1_lock, tracker2_lock)));
+			threads.add(new Thread(new CCThread(cRequestReader1, 1, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock, tracker, tracker1_lock, tracker2_lock)));
+			threads.add(new Thread(new CCThread(cResponseWriter2, 2, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock, tracker, tracker1_lock, tracker2_lock)));
+			threads.add(new Thread(new CCThread(cRequestReader2, 2, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock, tracker, tracker1_lock, tracker2_lock)));
 			
 			//Slave threads
 			threads.add(new Thread(new SCThread(sResponseWriter1, 1, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock)));
