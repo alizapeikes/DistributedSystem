@@ -28,16 +28,40 @@ public class SlaveThread extends Thread {
 	
 	@Override
 	public void run() {
+		
+		//writer thread
 		if(responseWriter != null) {
-			
+			while(true) {
+				String currentJob;
+				synchronized(myJobs_Lock) {
+					currentJob = myJobs.get(0);
+					myJobs.remove(0);
+				}
+				try {
+					if(currentJob.charAt(0) == slaveType) {
+						sleep(2000);
+						responseWriter.print("02" + currentJob);
+					}
+					else {
+						sleep(10000);
+						responseWriter.print("10" + currentJob);
+					}
+					
+					sleep(1000); // to slow down infinite loop
+				}
+				catch(Exception e) {
+				}
+			}
 		}
 		
+		//reader thread
 		else {
 			try{
 				String requestString;
-				System.out.println("Hi from else in MC thread");
 				while((requestString = requestReader.readLine()) !=null) {
-					System.out.println(requestString);
+					synchronized(myJobs_Lock){
+						myJobs.add(requestString);
+					}
 				}
 			}
 			catch(IOException e) {

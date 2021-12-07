@@ -5,7 +5,7 @@ public class SlaveB {
 	public static void main(String[] args) {
 		
 		//Hardcode port number
-		args = new String[] {"30121"};
+		args = new String[] {"30122"};
 		if(args.length != 1) {
 			System.err.println("Usage: Java master <port number>");
 			System.exit(1);

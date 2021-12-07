@@ -18,19 +18,20 @@ public class Master {
 	public static void main(String[] args) {
 		
 		//Hard code port number
-		args = new String[] {"30121"};
+		args = new String[] {"30121", "30122"};
 		if(args.length != 1) {
 			System.err.println("Usage: Java master <port number>");
 			System.exit(1);
 		}
 		
-		int portNumber = Integer.parseInt(args[0]);
+		int portNumber1 = Integer.parseInt(args[0]);
+		int portNumber2 = Integer.parseInt(args[1]);
 		
 		//Hard coded for 2 clients
 		int clients = 2;
 		try(
 			//Resources for clients
-			ServerSocket clientCommunicate = new ServerSocket(portNumber);
+			ServerSocket clientCommunicate = new ServerSocket(portNumber1);
 			Socket client1Socket = clientCommunicate.accept();
 			Socket client2Socket = clientCommunicate.accept();
 			PrintWriter cResponseWriter1 = new PrintWriter(client1Socket.getOutputStream(), true);
@@ -39,7 +40,7 @@ public class Master {
 			BufferedReader cRequestReader2 = new BufferedReader(new InputStreamReader(client2Socket.getInputStream()));
 				
 			//Resources for slaves
-			ServerSocket slaveCommunicate = new ServerSocket(portNumber);
+			ServerSocket slaveCommunicate = new ServerSocket(portNumber2);
 			Socket slave1Socket = clientCommunicate.accept();
 			Socket slave2Socket = clientCommunicate.accept();
 			PrintWriter sResponseWriter1 = new PrintWriter(client1Socket.getOutputStream(), true);
@@ -50,25 +51,28 @@ public class Master {
 		){	
 			ArrayList<String> jobs4Slave1 = new ArrayList<>();
 			ArrayList<String> jobs4Slave2 = new ArrayList<>();
+			ArrayList<String> jobs1Done = new ArrayList<>();
+			ArrayList<String> jobs2Done = new ArrayList<>();
+			LoadTracker tracker = new LoadTracker();
 			Object jobs4Slave1_lock = new Object();
 			Object jobs4Slave2_lock = new Object();
-			LoadTracker tracker = new LoadTracker();
-			Object tracker1_lock = new Object();
-			Object tracker2_lock = new Object();
+			Object jobs1Done_lock = new Object();
+			Object jobs2Done_lock = new Object();
+			Object tracker_lock = new Object();		
 			
 			
 			ArrayList<Thread> threads = new ArrayList<>();
 			//Client threads
-			threads.add(new Thread(new CCThread(cResponseWriter1, 1, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock, tracker, tracker1_lock, tracker2_lock)));
-			threads.add(new Thread(new CCThread(cRequestReader1, 1, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock, tracker, tracker1_lock, tracker2_lock)));
-			threads.add(new Thread(new CCThread(cResponseWriter2, 2, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock, tracker, tracker1_lock, tracker2_lock)));
-			threads.add(new Thread(new CCThread(cRequestReader2, 2, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock, tracker, tracker1_lock, tracker2_lock)));
+			threads.add(new Thread(new CCThread(cResponseWriter1, 1, jobs1Done, jobs1Done_lock)));
+			threads.add(new Thread(new CCThread(cRequestReader1, 1, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock, tracker, tracker_lock)));
+			threads.add(new Thread(new CCThread(cResponseWriter2, 2, jobs2Done, jobs2Done_lock)));
+			threads.add(new Thread(new CCThread(cRequestReader2, 2, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock, tracker, tracker_lock)));
 			
 			//Slave threads
 			threads.add(new Thread(new SCThread(sResponseWriter1, 1, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock)));
-			threads.add(new Thread(new SCThread(sRequestReader1, 1, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock)));
+			threads.add(new Thread(new SCThread(sRequestReader1, 1, jobs1Done, jobs2Done, jobs1Done_lock, jobs2Done_lock, tracker, tracker_lock)));
 			threads.add(new Thread(new SCThread(sResponseWriter2, 2, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock)));
-			threads.add(new Thread(new SCThread(sRequestReader2, 2, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock)));
+			threads.add(new Thread(new SCThread(sRequestReader2, 2, jobs1Done, jobs2Done, jobs1Done_lock, jobs2Done_lock, tracker, tracker_lock)));
 			
 			for(Thread t: threads) {
 				t.start();

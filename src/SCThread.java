@@ -7,27 +7,34 @@ public class SCThread extends Thread{
 	
 	private PrintWriter responseWriter = null;
 	private BufferedReader requestReader = null;
-	private ArrayList<String> jobs4Slave1;
-	private ArrayList<String> jobs4Slave2;
-	private Object jobs4Slave1_Lock;
-	private Object jobs4Slave2_Lock;
+	private int id;
+	private ArrayList<String> jobs1;
+	private ArrayList<String> jobs2;
+	private Object jobs1_Lock;
+	private Object jobs2_Lock;
+	private LoadTracker loadTracker;
+	private Object loadTracker_Lock;
 	
 	public SCThread(PrintWriter responseWriter, int id, ArrayList<String> jobs4Slave1, ArrayList<String>jobs4Slave2,
 			Object jobs4Slave1_Lock, Object jobs4Slave2_Lock) {
 		this.responseWriter = responseWriter;
-		this.jobs4Slave1 = jobs4Slave1;
-		this.jobs4Slave2 = jobs4Slave2;
-		this.jobs4Slave1_Lock = jobs4Slave1_Lock;
-		this.jobs4Slave2_Lock = jobs4Slave2_Lock;
+		this.id = id;
+		this.jobs1 = jobs4Slave1;
+		this.jobs2 = jobs4Slave2;
+		this.jobs1_Lock = jobs4Slave1_Lock;
+		this.jobs2_Lock = jobs4Slave2_Lock;
 
 	}
-	public SCThread(BufferedReader requestReader, int id, ArrayList<String> jobs4Slave1, ArrayList<String>jobs4Slave2,
-			Object jobs4Slave1_Lock, Object jobs4Slave2_Lock) {
+	public SCThread(BufferedReader requestReader, int id, ArrayList<String> jobs1, ArrayList<String>jobs2,
+			Object jobs1_Lock, Object jobs2_Lock, LoadTracker loadTracker, Object loadTracker_Lock) {
 		this.requestReader = requestReader;
-		this.jobs4Slave1 = jobs4Slave1;
-		this.jobs4Slave2 = jobs4Slave2;
-		this.jobs4Slave1_Lock = jobs4Slave1_Lock;
-		this.jobs4Slave2_Lock = jobs4Slave2_Lock;
+		this.id = id;
+		this.jobs1 = jobs1;
+		this.jobs2 = jobs2;
+		this.jobs1_Lock = jobs1_Lock;
+		this.jobs2_Lock = jobs2_Lock;
+		this.loadTracker = loadTracker;
+		this.loadTracker_Lock = loadTracker_Lock;
 	}
 	
 
@@ -35,18 +42,60 @@ public class SCThread extends Thread{
 	public void run() {
 		if(requestReader != null) {
 			try {
-				while(!jobs4Slave1.isEmpty()) {
-					synchronized(jobs4Slave1_Lock) {
-						responseWriter.print(jobs4Slave1.get(0));
-						jobs4Slave1.remove(0);
+				while(true) {
+					if(id ==1) {
+						synchronized(jobs1_Lock) {
+							while(!jobs1.isEmpty()) {
+								responseWriter.print(jobs1.get(0));
+								jobs1.remove(0);
+							}
+						}
 					}
+					else {
+						synchronized(jobs2_Lock) {
+							while(!jobs2.isEmpty()) {
+								responseWriter.print(jobs2.get(0));
+								jobs1.remove(0);
+							}
+						}
+					}
+					sleep(1000); //to slow down infinite loop
 				}
 			}
-			catch(IOException e) {
+			catch(Exception e) {
 				System.out.println("Exception caught when trying to listen on port in thread");
 			}
 		}
 		else {
+			try {
+				String requestString;
+				while((requestString = requestReader.readLine()) !=null) {
+					if(Integer.parseInt(requestString.substring(3))%2 ==0) {
+						synchronized(jobs1_Lock) {
+							jobs1.add(requestString);
+						}						
+					}
+					else {
+						synchronized(jobs2_Lock) {
+							jobs2.add(requestString);
+						}
+					}
+					if(id ==1) {
+						synchronized(loadTracker_Lock) {
+							loadTracker.removeWorkA(Integer.parseInt(requestString.substring(0,2)));
+						}
+					}
+					else {
+						synchronized(loadTracker_Lock) {
+							loadTracker.removeWorkB(Integer.parseInt(requestString.substring(0,2)));
+						}
+					}
+				}
+				
+			}
+			catch(IOException e) {
+				System.out.println("Exception caught when trying to listen on port");
+			}
 			
 			
 		}

@@ -2,7 +2,7 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-public class CCThread implements Runnable {
+public class CCThread extends Thread {
 	private PrintWriter responseWriter = null;
 	private BufferedReader requestReader = null;
 	private ArrayList<String> jobs4Slave1;
@@ -11,24 +11,20 @@ public class CCThread implements Runnable {
 	private Object jobs4Slave2_Lock;
 	private int id;
 	private LoadTracker tracker;
-	private Object tracker1_lock;
-	private Object tracker2_lock;
+	private Object tracker_lock;
+	private ArrayList<String> finishedJobs;
+	private Object finishedJobs_Lock;
 	
-	public CCThread(PrintWriter responseWriter, int id, ArrayList<String> jobs4Slave1, ArrayList<String>jobs4Slave2,
-			Object jobs4Slave1_Lock, Object jobs4Slave2_Lock,  LoadTracker tracker, Object tracker1_lock, Object tracker2_lock) {
+	public CCThread(PrintWriter responseWriter, int id, ArrayList<String> jobs, Object jobs_lock) {
 		this.responseWriter = responseWriter;
 		this.id = id;
-		this.jobs4Slave1 = jobs4Slave1;
-		this.jobs4Slave2 = jobs4Slave2;
-		this.jobs4Slave1_Lock = jobs4Slave1_Lock;
-		this.jobs4Slave2_Lock = jobs4Slave2_Lock;
-		this.tracker = tracker;
-		this.tracker1_lock = tracker1_lock;
-		this.tracker2_lock = tracker2_lock;
+		finishedJobs = jobs;
+		finishedJobs_Lock = jobs_lock;
+		
 	}
 	
 	public CCThread(BufferedReader requestReader, int id, ArrayList<String> jobs4Slave1, ArrayList<String>jobs4Slave2,
-			Object jobs4Slave1_Lock, Object jobs4Slave2_Lock, LoadTracker tracker, Object tracker1_lock, Object tracker2_lock) {
+			Object jobs4Slave1_Lock, Object jobs4Slave2_Lock, LoadTracker tracker, Object tracker_lock) {
 		this.requestReader = requestReader;
 		this.id = id;
 		this.jobs4Slave1 = jobs4Slave1;
@@ -36,8 +32,7 @@ public class CCThread implements Runnable {
 		this.jobs4Slave1_Lock = jobs4Slave1_Lock;
 		this.jobs4Slave2_Lock = jobs4Slave2_Lock;
 		this.tracker = tracker;
-		this.tracker1_lock = tracker1_lock;
-		this.tracker2_lock = tracker2_lock;
+		this.tracker_lock = tracker_lock;
 	}
 	
 	@Override
@@ -48,22 +43,26 @@ public class CCThread implements Runnable {
 				while((requestString = requestReader.readLine()) !=null) {
 					char jobType = requestString.charAt(0);
 					String jobName = requestString;
-					synchronized(tracker1_lock) {
-						if((jobType == 'a' && tracker.getSlaveALoad() - tracker.getSlaveBLoad() <= 8) || (jobType == 'b' && tracker.getSlaveBLoad() - tracker.getSlaveALoad() > 8)){
-							synchronized(jobs4Slave1_Lock) {
-								jobs4Slave1.add(jobName);
-							} 
-							int amount = jobType == 'a' ? 2: 10;
-							tracker.addWorkA(amount);
-							System.out.println("Adding job a to the job a list");
-						}else {
-							synchronized(jobs4Slave2_Lock) {
-								jobs4Slave2.add(jobName);
-							}
-							int amount = jobType == 'b' ? 2: 10;
-							tracker.addWorkB(amount);
-							System.out.println("Adding job b to the job b list");
+					int slaveALoad;
+					int slaveBLoad;
+					synchronized(tracker_lock) {
+						slaveALoad = tracker.getSlaveALoad();
+						slaveBLoad = tracker.getSlaveBLoad();
+					}
+					if((jobType == 'a' && slaveALoad - slaveBLoad <= 8) || (jobType == 'b' && slaveBLoad - slaveALoad > 8)){
+						synchronized(jobs4Slave1_Lock) {
+							jobs4Slave1.add(jobName);
+						} 
+						int amount = jobType == 'a' ? 2: 10;
+						tracker.addWorkA(amount);
+						System.out.println("Adding job a to the job a list");
+					}else {
+						synchronized(jobs4Slave2_Lock) {
+							jobs4Slave2.add(jobName);
 						}
+						int amount = jobType == 'b' ? 2: 10;
+						tracker.addWorkB(amount);
+						System.out.println("Adding job b to the job b list");
 					}	
 				}
 			}
@@ -72,12 +71,19 @@ public class CCThread implements Runnable {
 			}
 		}
 		else {
-			System.out.println("Hi from else in CC Thread");
-			
-			int infinite = 0;
-			while(infinite == 0) {
-				responseWriter.println("hello");
-				break;
+			while(true) {
+				synchronized(finishedJobs_Lock) {
+					if(!finishedJobs.isEmpty()) {
+						responseWriter.print(finishedJobs.get(0));
+						finishedJobs.remove(0);
+					}
+				}
+				try {
+					sleep(1000);
+				}
+				catch(Exception e) {
+					
+				}
 			}
 			
 		}
