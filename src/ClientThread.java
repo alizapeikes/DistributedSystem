@@ -35,16 +35,15 @@ public class ClientThread extends Thread {
 				}
 				//TODO code for -1
 				choice = choice + clientID;
-				clientID+=2;
+				clientID += 2;	//All jobs from each client have a client ID that corresponds to the original client's odd/even
 				responseWriter.println(choice);
-				
+				System.out.println(choice + "sent");
 			  }while(!choice.equals("-1"));
 		}
 		
 		else {
 			try{
 				String requestString;
-				System.out.println("Hi from else in MC thread");
 				while((requestString = requestReader.readLine()) !=null) {
 					System.out.println(requestString);
 				}
