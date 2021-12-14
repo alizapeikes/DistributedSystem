@@ -40,12 +40,14 @@ public class SCThread extends Thread{
 
 	@Override
 	public void run() {
-		if(requestReader != null) {
+		if(responseWriter != null) {
 			try {
 				while(true) {
 					if(id ==1) {
 						synchronized(jobs1_Lock) {
 							while(!jobs1.isEmpty()) {
+								//Should this be here?
+								System.out.println("Sending job " + jobs1.get(0) + " to slave 1.");
 								responseWriter.print(jobs1.get(0));
 								jobs1.remove(0);
 							}
@@ -54,6 +56,8 @@ public class SCThread extends Thread{
 					else {
 						synchronized(jobs2_Lock) {
 							while(!jobs2.isEmpty()) {
+								//Should this be here?
+								System.out.println("Sending job " + jobs2.get(0) + " to slave 2.");
 								responseWriter.print(jobs2.get(0));
 								jobs1.remove(0);
 							}
@@ -72,11 +76,15 @@ public class SCThread extends Thread{
 				while((requestString = requestReader.readLine()) !=null) {
 					if(Integer.parseInt(requestString.substring(3))%2 ==0) {
 						synchronized(jobs1_Lock) {
+							//Should this be here?
+							System.out.println(jobs1.get(0) + " Completed.");
 							jobs1.add(requestString);
 						}						
 					}
 					else {
 						synchronized(jobs2_Lock) {
+							//Should this be here?
+							System.out.println(jobs2.get(0) + " Completed.");
 							jobs2.add(requestString);
 						}
 					}

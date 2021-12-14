@@ -32,24 +32,45 @@ public class SlaveThread extends Thread {
 		//writer thread
 		if(responseWriter != null) {
 			while(true) {
-				String currentJob;
-				synchronized(myJobs_Lock) {
-					currentJob = myJobs.get(0);
-					myJobs.remove(0);
-				}
-				try {
-					if(currentJob.charAt(0) == slaveType) {
-						sleep(2000);
-						responseWriter.print("02" + currentJob);
+				boolean empty;
+				synchronized(myJobs_Lock){
+					//Reading to see if there's a job to work on. 
+					//In synchronized because myJobs arrayList shared with the reader thread.
+					//Even if the reader gets control of the myJobs list before the next while
+					//loop executes, won't cause indexOutOfBounds exception because it will only add to the list not remove.
+					//The removing can only happen later on in this thread
+					empty = myJobs.isEmpty();
+				}	
+				while(!empty) {
+					String currentJob;
+					synchronized(myJobs_Lock) {
+						currentJob = myJobs.get(0);
+						myJobs.remove(0);
 					}
-					else {
-						sleep(10000);
-						responseWriter.print("10" + currentJob);
+					try {
+						if(currentJob.charAt(0) == slaveType) {
+							sleep(2000);
+							//Should we synchronize here?
+							System.out.println("Sleeping for 2 seconds");
+							System.out.println("Sending job " + currentJob + " to master.");
+							responseWriter.print("02" + currentJob);
+						}
+						else {
+							sleep(10000);
+							//Should we synchronize here?
+							System.out.println("Sleeping for 10 seconds");
+							System.out.println("Sending job " + currentJob + " to master.");
+							responseWriter.print("10" + currentJob);
+						}
+						
+						sleep(1000); // to slow down infinite loop
 					}
-					
-					sleep(1000); // to slow down infinite loop
-				}
-				catch(Exception e) {
+					catch(Exception e) {
+					}
+					synchronized(myJobs_Lock){
+						//see comment above
+						empty = myJobs.isEmpty();
+					}
 				}
 			}
 		}
@@ -59,6 +80,8 @@ public class SlaveThread extends Thread {
 			try{
 				String requestString;
 				while((requestString = requestReader.readLine()) !=null) {
+					//should this be in synchronized block???
+					System.out.println("Reading job " + requestString + " from master.");
 					synchronized(myJobs_Lock){
 						myJobs.add(requestString);
 					}

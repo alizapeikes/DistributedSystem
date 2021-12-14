@@ -44,9 +44,8 @@ public class ClientThread extends Thread {
 		else {
 			try{
 				String requestString;
-				System.out.println("Hi from else in MC thread");
 				while((requestString = requestReader.readLine()) !=null) {
-					System.out.println(requestString);
+					System.out.println(requestString + "Completed.");
 				}
 			}
 			catch(IOException e) {
