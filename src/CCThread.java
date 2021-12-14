@@ -39,32 +39,34 @@ public class CCThread extends Thread {
 	public void run() {
 		if(requestReader != null) {
 			try {
-				String requestString;
-				while((requestString = requestReader.readLine()) !=null) {
-					char jobType = requestString.charAt(0);
-					String jobName = requestString;
-					int slaveALoad;
-					int slaveBLoad;
-					synchronized(tracker_lock) {
-						slaveALoad = tracker.getSlaveALoad();
-						slaveBLoad = tracker.getSlaveBLoad();
-					}
-					if((jobType == 'a' && slaveALoad - slaveBLoad <= 8) || (jobType == 'b' && slaveBLoad - slaveALoad > 8)){
-						synchronized(jobs4Slave1_Lock) {
-							jobs4Slave1.add(jobName);
-						} 
-						int amount = jobType == 'a' ? 2: 10;
-						tracker.addWorkA(amount);
-						System.out.println("Adding job a to the job a list");
-					}else {
-						synchronized(jobs4Slave2_Lock) {
-							jobs4Slave2.add(jobName);
+				while(true) {
+					String requestString;
+					while((requestString = requestReader.readLine()) !=null) {
+						char jobType = requestString.charAt(0);
+						String jobName = requestString;
+						int slaveALoad;
+						int slaveBLoad;
+						synchronized(tracker_lock) {
+							slaveALoad = tracker.getSlaveALoad();
+							slaveBLoad = tracker.getSlaveBLoad();
 						}
-						int amount = jobType == 'b' ? 2: 10;
-						tracker.addWorkB(amount);
-						System.out.println("Adding job b to the job b list");
-					}	
-				}
+						if((jobType == 'a' && slaveALoad - slaveBLoad <= 8) || (jobType == 'b' && slaveBLoad - slaveALoad > 8)){
+							synchronized(jobs4Slave1_Lock) {
+								jobs4Slave1.add(jobName);
+							} 
+							int amount = jobType == 'a' ? 2: 10;
+							tracker.addWorkA(amount);
+							System.out.println("Adding job a to the job a list");
+						}else {
+							synchronized(jobs4Slave2_Lock) {
+								jobs4Slave2.add(jobName);
+							}
+							int amount = jobType == 'b' ? 2: 10;
+							tracker.addWorkB(amount);
+							System.out.println("Adding job b to the job b list");
+						}	
+					}
+				}	
 			}
 			catch(IOException e) {
 				System.out.println("Exception caught when trying to listen on port in thread");
@@ -74,6 +76,8 @@ public class CCThread extends Thread {
 			while(true) {
 				synchronized(finishedJobs_Lock) {
 					if(!finishedJobs.isEmpty()) {
+						//Which client are we sending it to??
+						System.out.println("Sending job " + finishedJobs.get(0) + " to client.");
 						responseWriter.print(finishedJobs.get(0));
 						finishedJobs.remove(0);
 					}

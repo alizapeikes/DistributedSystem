@@ -19,7 +19,7 @@ public class Master {
 		
 		//Hard code port number
 		args = new String[] {"30121", "30122"};
-		if(args.length != 1) {
+		if(args.length != 2) {
 			System.err.println("Usage: Java master <port number>");
 			System.exit(1);
 		}

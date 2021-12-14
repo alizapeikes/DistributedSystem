@@ -45,7 +45,7 @@ public class ClientThread extends Thread {
 			try{
 				String requestString;
 				while((requestString = requestReader.readLine()) !=null) {
-					System.out.println(requestString);
+					System.out.println(requestString + "Completed.");
 				}
 			}
 			catch(IOException e) {
