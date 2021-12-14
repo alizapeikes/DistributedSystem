@@ -37,19 +37,22 @@ public class ClientThread extends Thread {
 				choice = choice + clientID;
 				clientID += 2;	//All jobs from each client have a client ID that corresponds to the original client's odd/even
 				responseWriter.println(choice);
-				System.out.println(choice + "sent");
+
 			  }while(!choice.equals("-1"));
 		}
 		
 		else {
 			try{
-				String requestString;
-				while((requestString = requestReader.readLine()) !=null) {
-					System.out.println(requestString + "Completed.");
+				while(true) {
+					String requestString;
+					while((requestString = requestReader.readLine()) !=null) {
+						System.out.println(requestString + "Completed.");
+					}
+					sleep(1000);
 				}
 			}
-			catch(IOException e) {
-				System.out.println("Exception caught when trying to listen on port in thread");
+			catch(IOException | InterruptedException g) {
+				System.out.println("Error");
 			}
 				
 		}

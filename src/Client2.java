@@ -12,7 +12,7 @@ public class Client2 {
 		int clientID = 1;
 		
 	  String hostName = "127.0.0.1";
-	  int portNumber = 30121;
+	  int portNumber = Integer.parseInt(args[0]);
 
 	  try (
 		       Socket clientSocket = new Socket(hostName, portNumber);

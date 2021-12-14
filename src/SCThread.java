@@ -59,7 +59,7 @@ public class SCThread extends Thread{
 								//Should this be here?
 								System.out.println("Sending job " + jobs2.get(0) + " to slave 2.");
 								responseWriter.print(jobs2.get(0));
-								jobs1.remove(0);
+								jobs2.remove(0);
 							}
 						}
 					}

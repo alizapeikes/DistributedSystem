@@ -13,26 +13,26 @@ public class SlaveA {
 		
 		String hostName = "127.0.0.1";
 		int portNumber = Integer.parseInt(args[0]);
-		
 		char slaveType = 'a';
-		ArrayList<String> myJobs = new ArrayList<String>();
-		Object myJobs_Lock = new Object();
+		
 		
 		try (
-			      Socket clientSocket = new Socket(hostName, portNumber);
+			      Socket slaveSocket = new Socket(hostName, portNumber);
 			        		
 			      BufferedReader requestReader= // stream to read text response from master
 			      new BufferedReader(
-			      new InputStreamReader(clientSocket.getInputStream())); 	
+			      new InputStreamReader(slaveSocket.getInputStream())); 	
 			        		
 			        PrintWriter responseWriter = // stream to write text requests to server
-			            new PrintWriter(clientSocket.getOutputStream(), true);
+			            new PrintWriter(slaveSocket.getOutputStream(), true);
 			   ){
-				  SlaveThread reader = new SlaveThread (requestReader, slaveType, myJobs, myJobs_Lock);
-				  SlaveThread writer = new SlaveThread (responseWriter, slaveType, myJobs, myJobs_Lock);
-				  
-				  reader.start();
-				  writer.start();
+				ArrayList<String> myJobs = new ArrayList<String>();
+				Object myJobs_Lock = new Object();
+				SlaveThread reader = new SlaveThread (requestReader, slaveType, myJobs, myJobs_Lock);
+				SlaveThread writer = new SlaveThread (responseWriter, slaveType, myJobs, myJobs_Lock);
+				System.out.println("Slave threads for A created");
+				reader.start();
+				writer.start();
 				  
 				  try{
 						reader.join();

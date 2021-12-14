@@ -28,7 +28,7 @@ public class SlaveThread extends Thread {
 	
 	@Override
 	public void run() {
-		
+		System.out.println("Slave thread running");
 		//writer thread
 		if(responseWriter != null) {
 			while(true) {
@@ -77,18 +77,24 @@ public class SlaveThread extends Thread {
 		
 		//reader thread
 		else {
+			System.out.println("In slave" + slaveType + "reader");
 			try{
 				String requestString;
-				while((requestString = requestReader.readLine()) !=null) {
-					//should this be in synchronized block???
-					System.out.println("Reading job " + requestString + " from master.");
-					synchronized(myJobs_Lock){
-						myJobs.add(requestString);
+				while(true) {
+					System.out.println(requestReader.readLine());
+					while((requestString = requestReader.readLine()) !=null) {
+						//should this be in synchronized block???
+						System.out.println("Reading job " + requestString + " from master.");
+						synchronized(myJobs_Lock){
+							myJobs.add(requestString);
+						}
 					}
+					System.out.println("sleeping");
+					sleep(1000);
 				}
 			}
-			catch(IOException e) {
-				System.out.println("Exception caught when trying to listen on port in thread");
+			catch(IOException | InterruptedException e) {
+				System.out.println("error");
 			}
 				
 		}

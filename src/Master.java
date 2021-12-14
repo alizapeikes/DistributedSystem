@@ -1,15 +1,9 @@
 /*
-<<<<<<< HEAD
  	Array list of jobs to send and remove them in sc thread when they are actually sent. we are going to use a while
  	loop to control this. Then when the slave finishes a job the master adds it to a different arraylist, and the scthread
  	reads from this arraylist and sends the jobs back to the client.
  	find out about synchronized block regarding adding info to an arrayList.
-=======
- * just did slave class
- * Trying to figure out how the master will send the jobs to the slaves
- * The slaves are having a separate arraylist to keep track of their jobs
- * master has to send the jobName to slaves
->>>>>>> c710f3f6678c5cefab386181c5a9e79c3f8cb490
+
  */
 import java.net.*;
 import java.io.*;
@@ -41,12 +35,12 @@ public class Master {
 				
 			//Resources for slaves
 			ServerSocket slaveCommunicate = new ServerSocket(portNumber2);
-			Socket slave1Socket = clientCommunicate.accept();
-			Socket slave2Socket = clientCommunicate.accept();
-			PrintWriter sResponseWriter1 = new PrintWriter(client1Socket.getOutputStream(), true);
-			BufferedReader sRequestReader1 = new BufferedReader(new InputStreamReader(client1Socket.getInputStream()));
-			PrintWriter sResponseWriter2 = new PrintWriter(client2Socket.getOutputStream(), true);
-			BufferedReader sRequestReader2 = new BufferedReader(new InputStreamReader(client2Socket.getInputStream()));
+			Socket slave1Socket = slaveCommunicate.accept();
+			Socket slave2Socket = slaveCommunicate.accept();
+			PrintWriter sResponseWriter1 = new PrintWriter(slave1Socket.getOutputStream(), true);
+			BufferedReader sRequestReader1 = new BufferedReader(new InputStreamReader(slave1Socket.getInputStream()));
+			PrintWriter sResponseWriter2 = new PrintWriter(slave2Socket.getOutputStream(), true);
+			BufferedReader sRequestReader2 = new BufferedReader(new InputStreamReader(slave2Socket.getInputStream()));
 		 	
 		){	
 			ArrayList<String> jobs4Slave1 = new ArrayList<>();

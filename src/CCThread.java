@@ -44,6 +44,7 @@ public class CCThread extends Thread {
 					while((requestString = requestReader.readLine()) !=null) {
 						char jobType = requestString.charAt(0);
 						String jobName = requestString;
+						System.out.println("In reading while loop Job name " + jobName);
 						int slaveALoad;
 						int slaveBLoad;
 						synchronized(tracker_lock) {
