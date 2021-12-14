@@ -10,6 +10,11 @@ public class Client1 {
 	public static void main(String[] args) {
 		int clientID = 0;
 		
+	  args = new String[] {"30121"};
+	  if(args.length != 1) {
+		   System.err.println("Usage: Java master <port number>");
+		   System.exit(1);
+	  }
 	  String hostName = "127.0.0.1";
 	  int portNumber =  Integer.parseInt(args[0]);
 

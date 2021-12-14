@@ -13,7 +13,7 @@ public class LoadTracker {
 	}
 	
 	public void removeWorkA(int amount) {
-		slaveBLoad += amount;
+		slaveBLoad -= amount;
 	}
 	
 	public void addWorkB(int amount) {
@@ -21,7 +21,7 @@ public class LoadTracker {
 	}
 	
 	public void removeWorkB(int amount) {
-		slaveBLoad += amount;
+		slaveBLoad -= amount;
 	}
 	
 	public int getSlaveALoad() {

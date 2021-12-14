@@ -30,7 +30,6 @@ public class SlaveA {
 				Object myJobs_Lock = new Object();
 				SlaveThread reader = new SlaveThread (requestReader, slaveType, myJobs, myJobs_Lock);
 				SlaveThread writer = new SlaveThread (responseWriter, slaveType, myJobs, myJobs_Lock);
-				System.out.println("Slave threads for A created");
 				reader.start();
 				writer.start();
 				  

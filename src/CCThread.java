@@ -79,7 +79,7 @@ public class CCThread extends Thread {
 					if(!finishedJobs.isEmpty()) {
 						//Which client are we sending it to??
 						System.out.println("Sending job " + finishedJobs.get(0) + " to client.");
-						responseWriter.print(finishedJobs.get(0));
+						responseWriter.println(finishedJobs.get(0));
 						finishedJobs.remove(0);
 					}
 				}

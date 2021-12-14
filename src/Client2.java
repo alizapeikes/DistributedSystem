@@ -9,8 +9,13 @@ import java.util.Scanner;
 
 public class Client2 {
 	public static void main(String[] args) {
-		int clientID = 1;
+	  int clientID = 1;
 		
+	  args = new String[] {"30121"};
+	  if(args.length != 1) {
+		   System.err.println("Usage: Java master <port number>");
+		   System.exit(1);
+	  }
 	  String hostName = "127.0.0.1";
 	  int portNumber = Integer.parseInt(args[0]);
 

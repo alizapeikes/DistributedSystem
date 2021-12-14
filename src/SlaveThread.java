@@ -28,7 +28,6 @@ public class SlaveThread extends Thread {
 	
 	@Override
 	public void run() {
-		System.out.println("Slave thread running");
 		//writer thread
 		if(responseWriter != null) {
 			while(true) {
@@ -53,14 +52,14 @@ public class SlaveThread extends Thread {
 							//Should we synchronize here?
 							System.out.println("Sleeping for 2 seconds");
 							System.out.println("Sending job " + currentJob + " to master.");
-							responseWriter.print("02" + currentJob);
+							responseWriter.println("02" + currentJob);
 						}
 						else {
 							sleep(10000);
 							//Should we synchronize here?
 							System.out.println("Sleeping for 10 seconds");
 							System.out.println("Sending job " + currentJob + " to master.");
-							responseWriter.print("10" + currentJob);
+							responseWriter.println("10" + currentJob);
 						}
 						
 						sleep(1000); // to slow down infinite loop
@@ -77,11 +76,9 @@ public class SlaveThread extends Thread {
 		
 		//reader thread
 		else {
-			System.out.println("In slave" + slaveType + "reader");
 			try{
 				String requestString;
 				while(true) {
-					System.out.println(requestReader.readLine());
 					while((requestString = requestReader.readLine()) !=null) {
 						//should this be in synchronized block???
 						System.out.println("Reading job " + requestString + " from master.");
