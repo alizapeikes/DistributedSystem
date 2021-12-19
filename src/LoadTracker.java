@@ -5,7 +5,7 @@ public class LoadTracker {
 	
 	public LoadTracker() {
 		slaveALoad = 0;
-		slaveALoad = 0;
+		slaveBLoad = 0;
 	}
 	
 	public void addWorkA(int amount) {
@@ -13,11 +13,11 @@ public class LoadTracker {
 	}
 	
 	public void removeWorkA(int amount) {
-		slaveBLoad -= amount;
+		slaveALoad -= amount;
 	}
 	
 	public void addWorkB(int amount) {
-		slaveALoad += amount;
+		slaveBLoad += amount;
 	}
 	
 	public void removeWorkB(int amount) {
