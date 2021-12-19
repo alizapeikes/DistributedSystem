@@ -34,10 +34,11 @@ public class ClientThread extends Thread {
 					choice = input.nextLine();
 				}
 				//TODO code for -1
-				choice = choice + clientID;
-				clientID += 2;	//All jobs from each client have a client ID that corresponds to the original client's odd/even
-				responseWriter.println(choice);
-
+				if(!choice.equals("-1")) {
+					choice = choice + clientID;
+					clientID += 2;	//All jobs from each client have a client ID that corresponds to the original client's odd/even
+					responseWriter.println(choice);
+				}
 			  }while(!choice.equals("-1"));
 		}
 		
@@ -46,9 +47,9 @@ public class ClientThread extends Thread {
 				while(true) {
 					String requestString;
 					while((requestString = requestReader.readLine()) !=null) {
-						System.out.println(requestString + "Completed.");
+						System.out.println("Job " + requestString + " Completed.");
 					}
-					sleep(1000);
+					sleep(250);
 				}
 			}
 			catch(IOException | InterruptedException g) {
@@ -58,4 +59,3 @@ public class ClientThread extends Thread {
 		}
 	}
 }
-
