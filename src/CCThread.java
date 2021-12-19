@@ -44,12 +44,14 @@ public class CCThread extends Thread {
 					while((requestString = requestReader.readLine()) !=null) {
 						char jobType = requestString.charAt(0);
 						String jobName = requestString;
-						System.out.println("In reading while loop Job name " + jobName);
 						int slaveALoad;
 						int slaveBLoad;
 						synchronized(tracker_lock) {
 							slaveALoad = tracker.getSlaveALoad();
 							slaveBLoad = tracker.getSlaveBLoad();
+							System.out.println("Slave A Load: " + slaveALoad);
+							System.out.println("Slave B Load: " + slaveBLoad);
+							
 						}
 						if((jobType == 'a' && slaveALoad - slaveBLoad <= 8) || (jobType == 'b' && slaveBLoad - slaveALoad > 8)){
 							synchronized(jobs4Slave1_Lock) {
@@ -57,14 +59,14 @@ public class CCThread extends Thread {
 							} 
 							int amount = jobType == 'a' ? 2: 10;
 							tracker.addWorkA(amount);
-							System.out.println("Adding job a to the job a list");
+							System.out.println("Adding job " +  jobName + " to the job A list");
 						}else {
 							synchronized(jobs4Slave2_Lock) {
 								jobs4Slave2.add(jobName);
 							}
 							int amount = jobType == 'b' ? 2: 10;
 							tracker.addWorkB(amount);
-							System.out.println("Adding job b to the job b list");
+							System.out.println("Adding job " + jobName + " to the job B list");
 						}	
 					}
 				}	
@@ -78,13 +80,13 @@ public class CCThread extends Thread {
 				synchronized(finishedJobs_Lock) {
 					if(!finishedJobs.isEmpty()) {
 						//Which client are we sending it to??
-						System.out.println("Sending job " + finishedJobs.get(0) + " to client.");
+						System.out.println("Sending job " + finishedJobs.get(0) + " to Client" + id);
 						responseWriter.println(finishedJobs.get(0));
 						finishedJobs.remove(0);
 					}
 				}
 				try {
-					sleep(1000);
+					sleep(250);
 				}
 				catch(Exception e) {
 					

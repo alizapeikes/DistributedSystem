@@ -51,6 +51,7 @@ public class SlaveThread extends Thread {
 							sleep(2000);
 							//Should we synchronize here?
 							System.out.println("Sleeping for 2 seconds");
+							System.out.println("Job " + currentJob + " completed.");
 							System.out.println("Sending job " + currentJob + " to master.");
 							responseWriter.println("02" + currentJob);
 						}
@@ -58,11 +59,12 @@ public class SlaveThread extends Thread {
 							sleep(10000);
 							//Should we synchronize here?
 							System.out.println("Sleeping for 10 seconds");
+							System.out.println("Job " + currentJob + " completed.");
 							System.out.println("Sending job " + currentJob + " to master.");
 							responseWriter.println("10" + currentJob);
 						}
 						
-						sleep(1000); // to slow down infinite loop
+						sleep(250); // to slow down infinite loop
 					}
 					catch(Exception e) {
 					}
@@ -87,7 +89,7 @@ public class SlaveThread extends Thread {
 						}
 					}
 					System.out.println("sleeping");
-					sleep(1000);
+					sleep(250);
 				}
 			}
 			catch(IOException | InterruptedException e) {

@@ -47,7 +47,7 @@ public class SCThread extends Thread{
 						synchronized(jobs1_Lock) {
 							while(!jobs1.isEmpty()) {
 								//Should this be here?
-								System.out.println("Sending job " + jobs1.get(0) + " to slave 1.");
+								System.out.println("Sending job " + jobs1.get(0) + " to Slave A.");
 								responseWriter.println(jobs1.get(0));
 								jobs1.remove(0);
 							}
@@ -57,13 +57,13 @@ public class SCThread extends Thread{
 						synchronized(jobs2_Lock) {
 							while(!jobs2.isEmpty()) {
 								//Should this be here?
-								System.out.println("Sending job " + jobs2.get(0) + " to slave 2.");
+								System.out.println("Sending job " + jobs2.get(0) + " to Slave B.");
 								responseWriter.println(jobs2.get(0));
 								jobs2.remove(0);
 							}
 						}
 					}
-					sleep(1000); //to slow down infinite loop
+					sleep(250); //to slow down infinite loop
 				}
 			}
 			catch(Exception e) {
@@ -77,14 +77,14 @@ public class SCThread extends Thread{
 					if(Integer.parseInt(requestString.substring(3))%2 ==0) {
 						synchronized(jobs1_Lock) {
 							//Should this be here?
-							System.out.println(requestString.substring(2) + " Completed.");
+							System.out.println("Job " + requestString.substring(2) + " Completed.");
 							jobs1.add(requestString.substring(2));
 						}						
 					}
 					else {
 						synchronized(jobs2_Lock) {
 							//Should this be here?
-							System.out.println(requestString.substring(2) + " Completed.");
+							System.out.println("Job " + requestString.substring(2) + " Completed.");
 							jobs2.add(requestString.substring(2));
 						}
 					}

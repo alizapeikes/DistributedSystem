@@ -15,8 +15,7 @@ public class SlaveB {
 		int portNumber = Integer.parseInt(args[0]);
 		
 		char slaveType = 'b';
-		ArrayList<String> myJobs = new ArrayList<String>();
-		Object myJobs_Lock = new Object();
+		
 		
 		try (
 			      Socket clientSocket = new Socket(hostName, portNumber);
@@ -28,11 +27,13 @@ public class SlaveB {
 			        PrintWriter responseWriter = // stream to write text requests to server
 			            new PrintWriter(clientSocket.getOutputStream(), true);
 			   ){
-				  SlaveThread reader = new SlaveThread (requestReader, slaveType, myJobs, myJobs_Lock);
-				  SlaveThread writer = new SlaveThread (responseWriter, slaveType, myJobs, myJobs_Lock);
-				  reader.start();
-				  writer.start();
-				  
+				ArrayList<String> myJobs = new ArrayList<String>();
+				Object myJobs_Lock = new Object();
+				SlaveThread reader = new SlaveThread (requestReader, slaveType, myJobs, myJobs_Lock);
+				SlaveThread writer = new SlaveThread (responseWriter, slaveType, myJobs, myJobs_Lock);
+				reader.start();
+				writer.start();
+			  
 				  try{
 						reader.join();
 						writer.join();
