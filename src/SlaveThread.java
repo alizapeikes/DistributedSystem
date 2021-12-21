@@ -30,6 +30,7 @@ public class SlaveThread extends Thread {
 	public void run() {
 		//writer thread
 		if(responseWriter != null) {
+			//responseWriter.println(Character.toString(slaveType));
 			while(true) {
 				boolean empty;
 				synchronized(myJobs_Lock){
@@ -80,7 +81,7 @@ public class SlaveThread extends Thread {
 		else {
 			try{
 				String requestString;
-				while(true) {
+				//while(true) {
 					while((requestString = requestReader.readLine()) !=null) {
 						//should this be in synchronized block???
 						System.out.println("Reading job " + requestString + " from master.");
@@ -90,7 +91,7 @@ public class SlaveThread extends Thread {
 					}
 					System.out.println("sleeping");
 					sleep(250);
-				}
+				//}
 			}
 			catch(IOException | InterruptedException e) {
 				System.out.println("error");

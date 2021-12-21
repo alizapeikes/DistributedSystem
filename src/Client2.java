@@ -1,25 +1,24 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Scanner;
-
 public class Client2 {
+	
 	public static void main(String[] args) {
-	  int clientID = 1;
 		
-	  args = new String[] {"30121"};
-	  if(args.length != 1) {
-		   System.err.println("Usage: Java master <port number>");
-		   System.exit(1);
-	  }
-	  String hostName = "127.0.0.1";
-	  int portNumber = Integer.parseInt(args[0]);
-
-	  try (
+		int clientID = 2;
+		
+		args = new String[] {"30121"};
+		if(args.length != 1) {
+			 System.err.println("Usage: Java master <port number>");
+			 System.exit(1);
+		}
+		String hostName = "127.0.0.1";
+		int portNumber =  Integer.parseInt(args[0]);
+	
+		  try (
 		       Socket clientSocket = new Socket(hostName, portNumber);
 		        		
 		       BufferedReader requestReader= // stream to read text response from server
@@ -43,14 +42,14 @@ public class Client2 {
 			  
 			  
 		  } catch (UnknownHostException e) {
-	        System.err.println("Don't know about host " + hostName);
-	        System.exit(1);
+		        System.err.println("Don't know about host " + hostName);
+		        System.exit(1);
 		  } catch (IOException e) {
-	        System.err.println("Couldn't get I/O for the connection to " +
-	            hostName);
-	        System.exit(1);
+		        System.err.println("Couldn't get I/O for the connection to " +
+		            hostName);
+		        System.exit(1);
 	    }	
 			
 			
 		}
-	}
+}

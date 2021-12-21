@@ -1,15 +1,12 @@
 /*
- 	Spacing of print statements
- 	Issue with slave a-only one job getting sent to slave a
- 	check over logic
- 	sleep for less time
- 	checking our workload algorithm
- 	write in slave that job completed
+ * Looked over master and both client classes. In middle of looking over ReadFromClient
+ * reminder to take away comments by infinite loops
  */
 import java.net.*;
 import java.io.*;
 import java.util.*;
 public class Master {
+	
 	public static void main(String[] args) {
 		
 		//Hard code port number
@@ -19,11 +16,9 @@ public class Master {
 			System.exit(1);
 		}
 		
-		int portNumber1 = Integer.parseInt(args[0]);
-		int portNumber2 = Integer.parseInt(args[1]);
+		int portNumber1 = Integer.parseInt(args[0]); //Port to connect to clients
+		int portNumber2 = Integer.parseInt(args[1]); //Port to connect to slaves
 		
-		//Hard coded for 2 clients
-		int clients = 2;
 		try(
 			//Resources for clients
 			ServerSocket clientCommunicate = new ServerSocket(portNumber1);
@@ -44,30 +39,30 @@ public class Master {
 			BufferedReader sRequestReader2 = new BufferedReader(new InputStreamReader(slave2Socket.getInputStream()));
 		 	
 		){	
-			ArrayList<String> jobs4Slave1 = new ArrayList<>();
-			ArrayList<String> jobs4Slave2 = new ArrayList<>();
-			ArrayList<String> jobs1Done = new ArrayList<>();
-			ArrayList<String> jobs2Done = new ArrayList<>();
-			LoadTracker tracker = new LoadTracker();
+			ArrayList<String> jobs4SlaveA = new ArrayList<>();
+			ArrayList<String> jobs4SlaveB = new ArrayList<>();
+			ArrayList<String> jobs1Done = new ArrayList<>();   	//Client1's finished jobs
+			ArrayList<String> jobs2Done = new ArrayList<>();   	//Client2's finished jobs
+			LoadTracker tracker = new LoadTracker();			//To track each slave's load
 			Object jobs4Slave1_lock = new Object();
 			Object jobs4Slave2_lock = new Object();
 			Object jobs1Done_lock = new Object();
 			Object jobs2Done_lock = new Object();
 			Object tracker_lock = new Object();		
 			
-			
 			ArrayList<Thread> threads = new ArrayList<>();
+			
 			//Client threads
-			threads.add(new Thread(new CCThread(cResponseWriter1, 1, jobs1Done, jobs1Done_lock)));
-			threads.add(new Thread(new CCThread(cRequestReader1, 1, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock, tracker, tracker_lock)));
-			threads.add(new Thread(new CCThread(cResponseWriter2, 2, jobs2Done, jobs2Done_lock)));
-			threads.add(new Thread(new CCThread(cRequestReader2, 2, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock, tracker, tracker_lock)));
+			threads.add(new WriteToClient(cResponseWriter1, 1, jobs1Done, jobs1Done_lock));
+			threads.add(new ReadFromClient(cRequestReader1, jobs4SlaveA, jobs4SlaveB, jobs4Slave1_lock, jobs4Slave2_lock, tracker, tracker_lock));
+			threads.add(new WriteToClient(cResponseWriter2, 2, jobs2Done, jobs2Done_lock));
+			threads.add(new ReadFromClient(cRequestReader2, jobs4SlaveA, jobs4SlaveB, jobs4Slave1_lock, jobs4Slave2_lock, tracker, tracker_lock));
 			
 			//Slave threads
-			threads.add(new Thread(new SCThread(sResponseWriter1, 1, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock)));
-			threads.add(new Thread(new SCThread(sRequestReader1, 1, jobs1Done, jobs2Done, jobs1Done_lock, jobs2Done_lock, tracker, tracker_lock)));
-			threads.add(new Thread(new SCThread(sResponseWriter2, 2, jobs4Slave1, jobs4Slave2, jobs4Slave1_lock, jobs4Slave2_lock)));
-			threads.add(new Thread(new SCThread(sRequestReader2, 2, jobs1Done, jobs2Done, jobs1Done_lock, jobs2Done_lock, tracker, tracker_lock)));
+			threads.add(new WriteToSlave(sResponseWriter1, 1, jobs4SlaveA, jobs4SlaveB, jobs4Slave1_lock, jobs4Slave2_lock));
+			threads.add(new ReadFromSlave(sRequestReader1, 1, jobs1Done, jobs2Done, jobs1Done_lock, jobs2Done_lock, tracker, tracker_lock));
+			threads.add(new WriteToSlave(sResponseWriter2, 2, jobs4SlaveA, jobs4SlaveB, jobs4Slave1_lock, jobs4Slave2_lock));
+			threads.add(new ReadFromSlave(sRequestReader2, 2, jobs1Done, jobs2Done, jobs1Done_lock, jobs2Done_lock, tracker, tracker_lock));
 			
 			for(Thread t: threads) {
 				t.start();
