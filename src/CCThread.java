@@ -50,22 +50,21 @@ public class CCThread extends Thread {
 							slaveALoad = tracker.getSlaveALoad();
 							slaveBLoad = tracker.getSlaveBLoad();
 							System.out.println("Slave A Load: " + slaveALoad);
-							System.out.println("Slave B Load: " + slaveBLoad);
-							
+							System.out.println("Slave B Load: " + slaveBLoad);	
 						}
 						if((jobType == 'a' && slaveALoad - slaveBLoad <= 8) || (jobType == 'b' && slaveBLoad - slaveALoad > 8)){
 							synchronized(jobs4Slave1_Lock) {
 								jobs4Slave1.add(jobName);
+								int amount = jobType == 'a' ? 2: 10;
+								tracker.addWorkA(amount);
 							} 
-							int amount = jobType == 'a' ? 2: 10;
-							tracker.addWorkA(amount);
 							System.out.println("Adding job " +  jobName + " to the job A list");
 						}else {
 							synchronized(jobs4Slave2_Lock) {
 								jobs4Slave2.add(jobName);
+								int amount = jobType == 'b' ? 2: 10;
+								tracker.addWorkB(amount);
 							}
-							int amount = jobType == 'b' ? 2: 10;
-							tracker.addWorkB(amount);
 							System.out.println("Adding job " + jobName + " to the job B list");
 						}	
 					}
