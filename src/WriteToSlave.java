@@ -6,19 +6,19 @@ public class WriteToSlave extends Thread {
 
 	private PrintWriter responseWriter;
 	private int id;
-	private ArrayList<String> jobs1;
-	private ArrayList<String> jobs2;
-	private Object jobs2_Lock;
-	private Object jobs1_Lock;
+	private ArrayList<String> jobsA;
+	private ArrayList<String> jobsB;
+	private Object jobsA_Lock;
+	private Object jobsB_Lock;
 
-	public WriteToSlave(PrintWriter responseWriter, int id, ArrayList<String> jobs4Slave1, ArrayList<String>jobs4Slave2,
-			Object jobs4Slave1_Lock, Object jobs4Slave2_Lock) {
+	public WriteToSlave(PrintWriter responseWriter, int id, ArrayList<String> jobs4SlaveA, ArrayList<String>jobs4SlaveB,
+			Object jobs4SlaveA_Lock, Object jobs4SlaveB_Lock) {
 		this.responseWriter = responseWriter;
 		this.id = id;
-		this.jobs1 = jobs4Slave1;
-		this.jobs2 = jobs4Slave2;
-		this.jobs1_Lock = jobs4Slave1_Lock;
-		this.jobs2_Lock = jobs4Slave2_Lock;
+		this.jobsA = jobs4SlaveA;
+		this.jobsB = jobs4SlaveB;
+		this.jobsA_Lock = jobs4SlaveA_Lock;
+		this.jobsB_Lock = jobs4SlaveB_Lock;
 
 	}
 	
@@ -26,23 +26,22 @@ public class WriteToSlave extends Thread {
 	public void run() {
 		try {
 			while(true) {
-				if(id ==1) {
-					synchronized(jobs1_Lock) {
-						while(!jobs1.isEmpty()) {
-							//Should this be here?
-							System.out.println("Sending job " + jobs1.get(0) + " to Slave A.");
-							responseWriter.println(jobs1.get(0));
-							jobs1.remove(0);
+				//Checks which slave to send the job to
+				if(id == 1) {
+					synchronized(jobsA_Lock) {
+						while(!jobsA.isEmpty()) {
+							System.out.println("Sending job " + jobsA.get(0) + " to Slave A.");
+							responseWriter.println(jobsA.get(0));
+							jobsA.remove(0);
 						}
 					}
 				}
 				else {
-					synchronized(jobs2_Lock) {
-						while(!jobs2.isEmpty()) {
-							//Should this be here?
-							System.out.println("Sending job " + jobs2.get(0) + " to Slave B.");
-							responseWriter.println(jobs2.get(0));
-							jobs2.remove(0);
+					synchronized(jobsB_Lock) {
+						while(!jobsB.isEmpty()) {
+							System.out.println("Sending job " + jobsB.get(0) + " to Slave B.");
+							responseWriter.println(jobsB.get(0));
+							jobsB.remove(0);
 						}
 					}
 				}

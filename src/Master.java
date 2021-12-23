@@ -39,8 +39,8 @@ public class Master {
 			BufferedReader sRequestReader2 = new BufferedReader(new InputStreamReader(slave2Socket.getInputStream()));
 		 	
 		){	
-			ArrayList<String> jobs4SlaveA = new ArrayList<>();
-			ArrayList<String> jobs4SlaveB = new ArrayList<>();
+			ArrayList<String> jobs4SlaveA = new ArrayList<>();	//List of jobs to be sent to slave A
+			ArrayList<String> jobs4SlaveB = new ArrayList<>();	//List of jobs to be sent to slave B
 			ArrayList<String> jobs1Done = new ArrayList<>();   	//Client1's finished jobs
 			ArrayList<String> jobs2Done = new ArrayList<>();   	//Client2's finished jobs
 			LoadTracker tracker = new LoadTracker();			//To track each slave's load

@@ -18,14 +18,15 @@ public class WriteToClient extends Thread{
 	@Override
 	public void run() {
 		while(true) {
+			
 			synchronized(finishedJobs_Lock) {
 				if(!finishedJobs.isEmpty()) {
-					//Which client are we sending it to??
 					System.out.println("Sending job " + finishedJobs.get(0) + " to Client" + id);
 					responseWriter.println(finishedJobs.get(0));
 					finishedJobs.remove(0);
 				}
 			}
+			
 			try {
 				sleep(250);
 			}

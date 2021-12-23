@@ -29,21 +29,22 @@ public class ClientThread extends Thread {
 				System.out.println("Enter -1 to quit");
 				System.out.println("Please enter job type:a/b");
 				choice = input.nextLine();
+				
 				while(!choice.equals("a") && !choice.equals("b") && !choice.equals("-1")) {
 					System.out.println("Please enter a valid entry:a/b");
 					choice = input.nextLine();
 				}
-				//TODO code for -1
+				
 				if(!choice.equals("-1")) {
 					choice = choice + clientID;
 					clientID += 2;	//All jobs from each client have a client ID that corresponds to the original client's odd/even
 					responseWriter.println(choice);
 					System.out.println("Job " + choice + " sent to master");
 				}
+				
 			  }while(!choice.equals("-1"));
-			System.exit(0);
-		}
 		
+		} 
 		else {
 			try{
 				//while(true) {
@@ -56,8 +57,7 @@ public class ClientThread extends Thread {
 			}
 			catch(IOException | InterruptedException g) {
 				System.out.println("Error");
-			}
-				
+			}		
 		}
 	}
 }

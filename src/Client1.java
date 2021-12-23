@@ -12,11 +12,13 @@ public class Client1 {
 		
 	  int clientID = 1;
 		
+	  //Port Number
 	  args = new String[] {"30121"};
 	  if(args.length != 1) {
 		   System.err.println("Usage: Java master <port number>");
 		   System.exit(1);
 	  }
+	  
 	  String hostName = "127.0.0.1";
 	  int portNumber = Integer.parseInt(args[0]);
 
@@ -29,7 +31,7 @@ public class Client1 {
 		        		
 		        PrintWriter responeWriter = // stream to write text requests to server
 		            new PrintWriter(clientSocket.getOutputStream(), true);
-		   ){
+		 ){
 			  ClientThread reader = new ClientThread (requestReader, clientID);
 			  ClientThread writer = new ClientThread (responeWriter, clientID);
 			  
@@ -50,7 +52,7 @@ public class Client1 {
 			  System.err.println("Couldn't get I/O for the connection to " +
 	            hostName);
 			  System.exit(1);
-	    }	
+		  }	
 			
 			
 		}
