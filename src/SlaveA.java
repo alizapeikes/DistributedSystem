@@ -4,17 +4,9 @@ import java.util.*;
 public class SlaveA {
 	public static void main(String[] args) {
 		
-		//Port number
-		args = new String[] {"30122"};
-		if(args.length != 1) {
-			System.err.println("Usage: Java master <port number>");
-			System.exit(1);
-		}
-		
 		String hostName = "127.0.0.1";
-		int portNumber = Integer.parseInt(args[0]);
+		int portNumber = 30122;
 		char slaveType = 'a';
-		
 		
 		try (
 			      Socket slaveSocket = new Socket(hostName, portNumber);
@@ -25,7 +17,8 @@ public class SlaveA {
 			        		
 			        PrintWriter responseWriter = // stream to write text requests to server
 			            new PrintWriter(slaveSocket.getOutputStream(), true);
-			   ){
+		  ){
+				System.out.println("Slave A connected");
 				ArrayList<String> myJobs = new ArrayList<String>();
 				Object myJobs_Lock = new Object();
 				

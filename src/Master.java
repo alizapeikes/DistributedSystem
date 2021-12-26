@@ -9,16 +9,9 @@ public class Master {
 	
 	public static void main(String[] args) {
 		
-		//Hard code port number
-		args = new String[] {"30121", "30122"};
-		if(args.length != 2) {
-			System.err.println("Usage: Java master <port number>");
-			System.exit(1);
-		}
-		
-		int portNumber1 = Integer.parseInt(args[0]); //Port to connect to clients
-		int portNumber2 = Integer.parseInt(args[1]); //Port to connect to slaves
-		
+		int portNumber1 = 30121; //Port to connect to clients
+		int portNumber2 = 30122; //Port to connect to slaves
+		System.out.println("Master running");
 		try(
 			//Resources for clients
 			ServerSocket clientCommunicate = new ServerSocket(portNumber1);
@@ -39,6 +32,7 @@ public class Master {
 			BufferedReader sRequestReader2 = new BufferedReader(new InputStreamReader(slave2Socket.getInputStream()));
 		 	
 		){	
+			System.out.println("Clients connected");
 			ArrayList<String> jobs4SlaveA = new ArrayList<>();	//List of jobs to be sent to slave A
 			ArrayList<String> jobs4SlaveB = new ArrayList<>();	//List of jobs to be sent to slave B
 			ArrayList<String> jobs1Done = new ArrayList<>();   	//Client1's finished jobs

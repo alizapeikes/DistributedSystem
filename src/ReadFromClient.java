@@ -24,48 +24,46 @@ public class ReadFromClient extends Thread {
 	@Override
 	public void run() {
 		try {
-			//while(true) {
-				String requestString;
-				while((requestString = requestReader.readLine()) !=null) {
-					char jobType = requestString.charAt(0);
-					String jobName = requestString;
-					int slaveALoad;
-					int slaveBLoad;
-					
-					//Reading tracker information to determine which slave to send the job to.
-					synchronized(tracker_lock) {
-						slaveALoad = tracker.getSlaveALoad();
-						slaveBLoad = tracker.getSlaveBLoad();
-					}
-
-					//Algorithm determines which slave to send the job to
-					if((jobType == 'a' && slaveALoad - slaveBLoad <= 8) || (jobType == 'b' && slaveBLoad - slaveALoad > 8)){
-						synchronized(jobs4SlaveA_Lock) {
-							jobs4SlaveA.add(jobName);
-						} 
-						
-						//Adding the correct 'work' to the tracker.
-						int amount = jobType == 'a' ? 2: 10;
-						synchronized(tracker_lock) {
-							tracker.addWorkA(amount);
-						}
-						
-						System.out.println("Adding job " +  jobName + " to the job A list");
-					}else {
-						synchronized(jobs4SlaveB_Lock) {
-							jobs4SlaveB.add(jobName);
-						}
-						
-						//Adding the correct 'work' to the tracker.
-						int amount = jobType == 'b' ? 2: 10;
-						synchronized(tracker_lock) {
-							tracker.addWorkB(amount);
-						}
-						
-						System.out.println("Adding job " + jobName + " to the job B list");
-					}	
+			String requestString;
+			while((requestString = requestReader.readLine()) !=null) {
+				char jobType = requestString.charAt(0);
+				String jobName = requestString;
+				int slaveALoad;
+				int slaveBLoad;
+				
+				//Reading tracker information to determine which slave to send the job to.
+				synchronized(tracker_lock) {
+					slaveALoad = tracker.getSlaveALoad();
+					slaveBLoad = tracker.getSlaveBLoad();
 				}
-			//}	
+
+				//Algorithm determines which slave to send the job to
+				if((jobType == 'a' && slaveALoad - slaveBLoad <= 8) || (jobType == 'b' && slaveBLoad - slaveALoad > 8)){
+					synchronized(jobs4SlaveA_Lock) {
+						jobs4SlaveA.add(jobName);
+					} 
+					
+					//Adding the correct 'work' to the tracker.
+					int amount = jobType == 'a' ? 2: 10;
+					synchronized(tracker_lock) {
+						tracker.addWorkA(amount);
+					}
+					
+					System.out.println("Adding job " +  jobName + " to the job A list");
+				}else {
+					synchronized(jobs4SlaveB_Lock) {
+						jobs4SlaveB.add(jobName);
+					}
+					
+					//Adding the correct 'work' to the tracker.
+					int amount = jobType == 'b' ? 2: 10;
+					synchronized(tracker_lock) {
+						tracker.addWorkB(amount);
+					}
+					
+					System.out.println("Adding job " + jobName + " to the job B list");
+				}	
+			}
 		}
 		catch(IOException e) {
 			System.out.println("Exception caught when trying to listen on port in thread");

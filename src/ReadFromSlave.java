@@ -32,7 +32,7 @@ public class ReadFromSlave extends Thread{
 	public void run() {
 		try {
 			String requestString;
-			while((requestString = requestReader.readLine()) !=null) {
+			while((requestString = requestReader.readLine()) != null) {
 				System.out.println("Job " + requestString.substring(2) + " Completed.");
 				
 				//Subtracting the work load from the tracker based on the amount

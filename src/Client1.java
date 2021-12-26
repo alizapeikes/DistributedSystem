@@ -11,16 +11,8 @@ public class Client1 {
 	public static void main(String[] args) {
 		
 	  int clientID = 1;
-		
-	  //Port Number
-	  args = new String[] {"30121"};
-	  if(args.length != 1) {
-		   System.err.println("Usage: Java master <port number>");
-		   System.exit(1);
-	  }
-	  
 	  String hostName = "127.0.0.1";
-	  int portNumber = Integer.parseInt(args[0]);
+	  int portNumber = 30121;
 
 	  try (
 		       Socket clientSocket = new Socket(hostName, portNumber);
@@ -32,6 +24,7 @@ public class Client1 {
 		        PrintWriter responeWriter = // stream to write text requests to server
 		            new PrintWriter(clientSocket.getOutputStream(), true);
 		 ){
+		  	  System.out.println("Client 1 connected to server");
 			  ClientThread reader = new ClientThread (requestReader, clientID);
 			  ClientThread writer = new ClientThread (responeWriter, clientID);
 			  

@@ -82,18 +82,16 @@ public class SlaveThread extends Thread {
 		else {
 			try{
 				String requestString;
-				//while(true) {
-					while((requestString = requestReader.readLine()) !=null) {
-						System.out.println("Reading job " + requestString + " from master.");
-						
-						synchronized(myJobs_Lock){
-							//Adding the job to the slaves list of jobs.
-							myJobs.add(requestString);
-						}
+				while((requestString = requestReader.readLine()) !=null) {
+					System.out.println("Reading job " + requestString + " from master.");
+					
+					synchronized(myJobs_Lock){
+						//Adding the job to the slaves list of jobs.
+						myJobs.add(requestString);
 					}
-					System.out.println("sleeping");
-					sleep(250);
-				//}
+				}
+				System.out.println("sleeping");
+				sleep(250);
 			}
 			catch(IOException | InterruptedException e) {
 				System.out.println("error");

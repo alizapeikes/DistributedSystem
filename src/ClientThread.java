@@ -28,11 +28,11 @@ public class ClientThread extends Thread {
 			do {
 				System.out.println("Enter -1 to quit");
 				System.out.println("Please enter job type:a/b");
-				choice = input.nextLine();
+				choice = input.nextLine().toLowerCase();
 				
 				while(!choice.equals("a") && !choice.equals("b") && !choice.equals("-1")) {
 					System.out.println("Please enter a valid entry:a/b");
-					choice = input.nextLine();
+					choice = input.nextLine().toLowerCase();
 				}
 				
 				if(!choice.equals("-1")) {
@@ -47,13 +47,11 @@ public class ClientThread extends Thread {
 		} 
 		else {
 			try{
-				//while(true) {
-					String requestString;
-					while((requestString = requestReader.readLine()) !=null) {
-						System.out.println("Job " + requestString + " Completed.");
-					}
-					sleep(250);
-				//}
+				String requestString;
+				while((requestString = requestReader.readLine()) !=null) {
+					System.out.println("Job " + requestString + " Completed.");
+				}
+				sleep(250);
 			}
 			catch(IOException | InterruptedException g) {
 				System.out.println("Error");
