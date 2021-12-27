@@ -1,7 +1,3 @@
-/*
- * Looked over master and both client classes. In middle of looking over ReadFromClient
- * reminder to take away comments by infinite loops
- */
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -32,7 +28,7 @@ public class Master {
 			BufferedReader sRequestReader2 = new BufferedReader(new InputStreamReader(slave2Socket.getInputStream()));
 		 	
 		){	
-			System.out.println("Clients connected");
+			System.out.println("Clients & Slaves connected");
 			ArrayList<String> jobs4SlaveA = new ArrayList<>();	//List of jobs to be sent to slave A
 			ArrayList<String> jobs4SlaveB = new ArrayList<>();	//List of jobs to be sent to slave B
 			ArrayList<String> jobs1Done = new ArrayList<>();   	//Client1's finished jobs

@@ -18,7 +18,6 @@ public class WriteToClient extends Thread{
 	@Override
 	public void run() {
 		while(true) {
-			
 			synchronized(finishedJobs_Lock) {
 				if(!finishedJobs.isEmpty()) {
 					System.out.println("Sending job " + finishedJobs.get(0) + " to Client" + id);
@@ -26,9 +25,8 @@ public class WriteToClient extends Thread{
 					finishedJobs.remove(0);
 				}
 			}
-			
 			try {
-				sleep(250);
+				sleep(250);//To slow down infinite loop
 			}
 			catch(Exception e) {
 				
